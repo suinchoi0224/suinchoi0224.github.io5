@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>급식 알림</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <style>
+    body {
+      margin: 0;
+      font-family: sans-serif;
+      background: linear-gradient(135deg, #4facfe, #00f2fe);
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .app {
+      background: white;
+      width: 90%;
+      max-width: 400px;
+      border-radius: 20px;
+      padding: 30px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+      text-align: center;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 24px;
+    }
+
+    .class-box {
+      margin: 20px 0;
+      font-size: 32px;
+      font-weight: bold;
+      color: #4facfe;
+    }
+
+    select, button {
+      width: 100%;
+      padding: 12px;
+      margin-top: 10px;
+      border-radius: 10px;
+      border: none;
+      font-size: 16px;
+    }
+
+    button {
+      background: #4facfe;
+      color: white;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #3a8dde;
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="app">
+  <h1>🍽 급식 순서</h1>
+
+  <div class="class-box" id="currentClass">선택하세요</div>
+
+  <!-- 학년 선택 -->
+  <select id="grade">
+    <option value="">학년 선택</option>
+    <option value="1">1학년</option>
+    <option value="2">2학년</option>
+    <option value="3">3학년</option>
+  </select>
+
+  <!-- 반 선택 -->
+  <select id="classNum">
+    <option value="">반 선택</option>
+  </select>
+
+  <button onclick="setClass()">적용하기</button>
+</div>
+
+<script>
+  const classSelect = document.getElementById("classNum");
+  const gradeSelect = document.getElementById("grade");
+
+  // 학년 선택하면 반 목록 생성
+  gradeSelect.addEventListener("change", function() {
+    const grade = this.value;
+    classSelect.innerHTML = '<option value="">반 선택</option>';
+
+    let maxClass = 0;
+
+    if (grade == "1") maxClass = 11;
+    else if (grade == "2") maxClass = 8;  // 필요하면 수정
+    else if (grade == "3") maxClass = 8;
+
+    for (let i = 1; i <= maxClass; i++) {
+      let option = document.createElement("option");
+      option.value = i;
+      option.text = i + "반";
+      classSelect.appendChild(option);
+    }
+  });
+
+  // 선택 적용
+  function setClass() {
+    const grade = gradeSelect.value;
+    const classNum = classSelect.value;
+
+    if (!grade || !classNum) {
+      alert("학년과 반을 모두 선택하세요!");
+      return;
+    }
+
+    const text = grade + "학년 " + classNum + "반";
+    document.getElementById("currentClass").innerText = text;
+
+    // 저장
+    localStorage.setItem("currentClass", text);
+  }
+
+  // 새로고침 시 유지
+  const saved = localStorage.getItem("currentClass");
+  if (saved) {
+    document.getElementById("currentClass").innerText = saved;
+  }
+</script>
+
+</body>
+</html>
